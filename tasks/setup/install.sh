@@ -13,6 +13,14 @@ apt-get install -y -qq \
 	"postgresql-contrib-${PG_VERSION}" \
 	"postgresql-common"
 
+log "Creating cluster 'main' (if not present)..."
+if pg_lsclusters -h | grep -q '^18[[:space:]].*main'; then
+  log "Cluster 18 main already exists."
+else
+  pg_createcluster 18 main -- --data-checksums
+  log "Cluster created with data checksums enabled."
+fi
+
 log "Enabling PostgreSQL service..."
 systemctl enable postgresql
 
