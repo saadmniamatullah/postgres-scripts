@@ -13,12 +13,18 @@ apt-get install -y -qq \
 	"postgresql-contrib-${PG_VERSION}" \
 	"postgresql-common"
 
-log "Creating cluster 'main' (if not present)..."
-if pg_lsclusters -h | grep -q '^18[[:space:]].*main'; then
-  log "Cluster 18 main already exists."
+log "Creating cluster 'main' (if needed)..."
+if [[ -f "${PG_DATA}/PG_VERSION" ]]; then
+	log "Data directory ${PG_DATA} already initialized."
+elif [[ -d "/etc/postgresql/${PG_VERSION}/main" ]]; then
+	log "Removing broken cluster entry..."
+	pg_dropcluster ${PG_VERSION} main --stop 2>/dev/null || true
+	log "Creating fresh cluster..."
+	pg_createcluster ${PG_VERSION} main
+	log "Cluster created."
 else
-  pg_createcluster 18 main -- --data-checksums
-  log "Cluster created with data checksums enabled."
+	pg_createcluster ${PG_VERSION} main
+	log "Cluster created."
 fi
 
 log "Enabling PostgreSQL service..."

@@ -45,15 +45,12 @@ require_root() {
 }
 
 require_postgres_installed() {
-  if ! pg_lsclusters -h | grep -q '^18[[:space:]].*main'; then
-    err "PostgreSQL ${PG_VERSION} main cluster not found. Run: tasks/setup/install.sh"
-  fi
-  if [[ ! -d "${PG_DATA}" ]]; then
-    err "Cluster data directory ${PG_DATA} does not exist. Run: tasks/setup/install.sh"
-  fi
-  if [[ ! -f "${PG_CONF}" ]]; then
-    err "postgresql.conf not found at ${PG_CONF}. Run: tasks/setup/install.sh"
-  fi
+	if [[ ! -f "${PG_DATA}/PG_VERSION" ]]; then
+		err "PostgreSQL ${PG_VERSION} data directory not initialized at ${PG_DATA}. Run: tasks/setup/install.sh"
+	fi
+	if [[ ! -f "${PG_CONF}" ]]; then
+		err "postgresql.conf not found at ${PG_CONF}. Run: tasks/setup/install.sh"
+	fi
 }
 
 backup_conf() {
