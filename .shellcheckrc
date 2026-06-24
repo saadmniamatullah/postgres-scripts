@@ -1,0 +1,2 @@
+# .shellcheckrc — project-wide shellcheck settings
+external-sources=true
