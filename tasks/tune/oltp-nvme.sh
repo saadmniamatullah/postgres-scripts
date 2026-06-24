@@ -112,6 +112,10 @@ host    all       all  127.0.0.1/32  scram-sha-256
 host    all       all  ::1/128       scram-sha-256
 HBA
 
+# Fix ownership (script runs as root, but pg_wrapper needs postgres:postgres)
+chown postgres:postgres "${PG_CONF}" "${PG_HBA}"
+chmod 640 "${PG_CONF}" "${PG_HBA}"
+
 # ─────────────────────────────────────────────
 # 4. Kernel tuning (sysctl)
 # ─────────────────────────────────────────────
